@@ -2,20 +2,18 @@ package api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
-import model.ExternalURL
 
 private const val baseUrl = "https://anc-backend-7502ef948715.herokuapp.com"
 
-class ChruchAPI {
+class ChurchAPI {
 
     companion object {
-        val shared = ChruchAPI()
+        val shared = ChurchAPI()
     }
 
-    val client = HttpClient(CIO)
+    private val client = HttpClient()
 
     suspend fun getJuboExternalURL(): Result<String> {
         return runCatching {
