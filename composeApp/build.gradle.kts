@@ -50,6 +50,8 @@ kotlin {
             implementation(libs.ktor.client.cio)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.coroutines.core)
+
+            implementation(libs.coil)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
