@@ -99,14 +99,13 @@ fun JuboImageView(externalLink: MutableState<ExternalURL>, onLoading: () -> Unit
     Box(
         modifier = Modifier
             .verticalScroll(verticalScrollState)
-            .size(3600.dp),
+            .size(1080.dp),
         contentAlignment = Alignment.Center
     ) {
         val horizontalScrollState = rememberScrollState()
         SubcomposeAsyncImage(
             model = externalLink.value.url,
             contentDescription = null,
-            alignment = Alignment.TopStart,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .horizontalScroll(horizontalScrollState)
