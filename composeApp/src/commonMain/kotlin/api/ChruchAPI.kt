@@ -26,3 +26,7 @@ class ChruchAPI {
         }
     }
 }
+
+enum class LoadingState {
+    Loading, Success, Failure, Error
+}
