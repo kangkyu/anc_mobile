@@ -1,16 +1,22 @@
 package ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -22,10 +28,16 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.consumeAllChanges
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
@@ -44,6 +56,9 @@ import coil3.fetch.NetworkFetcher
 import coil3.memory.MemoryCache
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import model.ExternalURL
 
@@ -57,7 +72,7 @@ fun JuboView() {
     val externalLink = remember { mutableStateOf(ExternalURL("")) }
     var loadState by remember { mutableStateOf(LoadingState.Loading) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Dispatchers.IO) {
         try {
             ChurchAPI.shared.getJuboExternalURL().onSuccess {
                 externalLink.value = Json.decodeFromString<ExternalURL>(it)
@@ -78,9 +93,7 @@ fun JuboView() {
         }
 
         LoadingState.Success -> {
-            JuboImageView(externalLink, onLoading = {
-                loadState = LoadingState.Loading
-            })
+            JuboImageView(externalLink)
         }
 
         LoadingState.Failure -> {
@@ -94,36 +107,68 @@ fun JuboView() {
 }
 
 @Composable
-fun JuboImageView(externalLink: MutableState<ExternalURL>, onLoading: () -> Unit = {}) {
+fun JuboImageView(externalLink: MutableState<ExternalURL>) {
+    val scale = remember { mutableStateOf(1f) }
+    val coroutineScope = rememberCoroutineScope()
+
     val verticalScrollState = rememberScrollState()
+    val horizontalScrollState = rememberScrollState()
     Box(
         modifier = Modifier
-            .verticalScroll(verticalScrollState)
-            .size(1080.dp),
-        contentAlignment = Alignment.Center
+            .wrapContentSize(align = Alignment.TopStart)
+            .pointerInput(Unit) {
+                detectTransformGestures { _, pan, gestureZoom, _ ->
+                    scale.value *= gestureZoom
+                }
+            }
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    coroutineScope.launch {
+                        horizontalScrollState.scrollBy(-dragAmount.x)
+                        verticalScrollState.scrollBy(-dragAmount.y)
+                    }
+                }
+            }
     ) {
-        val horizontalScrollState = rememberScrollState()
-        SubcomposeAsyncImage(
-            model = externalLink.value.url,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
+        Box(
             modifier = Modifier
                 .horizontalScroll(horizontalScrollState)
+                .verticalScroll(verticalScrollState)
                 .fillMaxSize()
+                .graphicsLayer(
+                    // adding some zoom limits (min 50%, max 200%)
+                    scaleX = maxOf(.5f, minOf(3f, scale.value)),
+                    scaleY = maxOf(.5f, minOf(3f, scale.value))
+                )
         ) {
-            val state = painter.state
-            when (state) {
-                is AsyncImagePainter.State.Loading -> {
-                    CircularProgressIndicator()
-                }
+            JuboImage(externalLink)
+        }
+    }
+}
 
-                is AsyncImagePainter.State.Error -> {
-                    Text("error")
-                }
+@Composable
+fun JuboImage(externalLink: MutableState<ExternalURL>) {
 
-                else -> {
-                    SubcomposeAsyncImageContent()
-                }
+    SubcomposeAsyncImage(
+        model = externalLink.value.url,
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize(),
+        alignment = Alignment.TopStart
+    ) {
+        val state = painter.state
+        when (state) {
+            is AsyncImagePainter.State.Loading -> {
+                JuboLoadingView()
+            }
+
+            is AsyncImagePainter.State.Error -> {
+                Text("error")
+            }
+
+            else -> {
+                SubcomposeAsyncImageContent()
             }
         }
     }
