@@ -69,7 +69,7 @@ fun SermonVideosView() {
     }
 
     val videos = response?.items?.toVideos() ?: emptyList()
-    VideosGrid(videos = videos, clickFunc = { openUrlInExternalBrowser("https://youtu.be/${it.videoId}")})
+    VideosGrid(videos = videos, clickFunc = { openUrlInExternalBrowser("https://youtu.be/${it.videoId}") })
 }
 
 fun List<SearchResult>.toVideos(): List<YouTubeVideo> {

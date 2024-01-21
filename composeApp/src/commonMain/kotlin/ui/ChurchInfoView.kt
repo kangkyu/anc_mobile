@@ -4,10 +4,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import org.example.project.openUrlInExternalBrowser
 
 @Composable
 fun ChurchInfoView() {
@@ -17,8 +22,16 @@ fun ChurchInfoView() {
     ) {
         Text(
             "10000 Foothill Blvd.\nLake View Terrace, CA 91342",
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             textAlign = TextAlign.Center
         )
+        Button(
+            onClick = {
+                openUrlInExternalBrowser("https://anconnuri.com")
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text("Home Page")
+        }
     }
 }
