@@ -36,6 +36,7 @@ import io.ktor.client.request.get
 import kotlinx.coroutines.IO
 import model.SearchListResponse
 import model.SearchResult
+import org.example.project.openUrlInExternalBrowser
 
 @Composable
 fun SermonVideosView() {
@@ -68,11 +69,13 @@ fun SermonVideosView() {
     }
 
     val videos = response?.items?.toVideos() ?: emptyList()
-    VideosGrid(videos = videos, clickFunc = {})
+    VideosGrid(videos = videos, clickFunc = { openUrlInExternalBrowser("https://youtu.be/${it.videoId}")})
 }
 
 fun List<SearchResult>.toVideos(): List<YouTubeVideo> {
-    return this.map { YouTubeVideo(it.id.videoId, it.snippet.title, it.snippet.thumbnails.high.url) }
+    return this.map {
+        YouTubeVideo(it.id.videoId, it.snippet.title, it.snippet.thumbnails.high.url)
+    }
 }
 
 @Composable
