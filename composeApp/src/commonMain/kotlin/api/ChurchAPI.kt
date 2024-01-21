@@ -18,8 +18,8 @@ class ChurchAPI {
     suspend fun getJuboExternalURL(): Result<String> {
         return runCatching {
             val response: HttpResponse = client.get("${baseUrl}/jubo.json")
-            client.close()
-
+            // client.close()
+            // commented out to avoid JobCancellationException
             response.body()
         }
     }
