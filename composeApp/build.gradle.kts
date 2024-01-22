@@ -44,6 +44,8 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
+            @OptIn(ExperimentalComposeLibrary::class)
+            implementation(compose.components.resources)
 
             implementation(libs.ktor.client.core)
             implementation(libs.kotlinx.serialization.json)
@@ -51,7 +53,7 @@ kotlin {
 
             implementation(libs.coil)
             implementation(libs.coil.compose)
-            implementation(libs.coil.network.ktor)
+            implementation(libs.coil.network)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
