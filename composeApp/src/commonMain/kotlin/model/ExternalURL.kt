@@ -6,5 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ExternalURL(
     @SerialName("external_url")
-    val url: String
+    val url: String,
+    @SerialName("image_urls")
+    val urls: List<String>
 )

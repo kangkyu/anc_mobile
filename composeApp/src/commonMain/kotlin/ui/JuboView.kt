@@ -4,7 +4,9 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import api.ChurchAPI
 import api.LoadingState
@@ -38,7 +41,7 @@ import model.ExternalURL
 
 @Composable
 fun JuboView() {
-    val externalLink = remember { mutableStateOf(ExternalURL("")) }
+    val externalLink = remember { mutableStateOf(ExternalURL("", listOf("", ""))) }
     var loadState by remember { mutableStateOf(LoadingState.Loading) }
 
     LaunchedEffect(Dispatchers.IO) {
@@ -85,7 +88,7 @@ fun JuboImageView(externalLink: MutableState<ExternalURL>) {
     val horizontalScrollState = rememberScrollState()
     Box(
         modifier = Modifier
-            .wrapContentSize(align = Alignment.TopStart)
+            .wrapContentSize(align = Alignment.TopEnd)
             .pointerInput(Unit) {
                 detectTransformGestures { _, pan, gestureZoom, _ ->
                     scale.value *= gestureZoom
@@ -119,26 +122,31 @@ fun JuboImageView(externalLink: MutableState<ExternalURL>) {
 
 @Composable
 fun JuboImage(externalLink: MutableState<ExternalURL>) {
-
-    SubcomposeAsyncImage(
-        model = externalLink.value.url,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxSize(),
-        alignment = Alignment.TopEnd
+    Column(
+        modifier = Modifier.wrapContentSize(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        val state = painter.state
-        when (state) {
-            is AsyncImagePainter.State.Loading -> {
-                Text("Image loading")
-            }
+        externalLink.value.urls.forEach { url ->
+            SubcomposeAsyncImage(
+                model = url,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                val state = painter.state
+                when (state) {
+                    is AsyncImagePainter.State.Loading -> {
+                        Text("Image loading...")
+                    }
 
-            is AsyncImagePainter.State.Error -> {
-                Text("Image error")
-            }
+                    is AsyncImagePainter.State.Error -> {
+                        Text("Image error")
+                    }
 
-            else -> {
-                SubcomposeAsyncImageContent()
+                    else -> {
+                        SubcomposeAsyncImageContent()
+                    }
+                }
             }
         }
     }
