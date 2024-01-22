@@ -51,9 +51,9 @@ fun SermonVideosView() {
         withContext(Dispatchers.IO) {
             val client = HttpClient()
 
-            val response = client.get("https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=$channelId&maxResults=7&order=date&type=video&key=$myApiKey")
+            val res = client.get("https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=$channelId&maxResults=7&order=date&type=video&key=$myApiKey")
             client.close()
-            outcome = response.body()
+            outcome = res.body()
         }
 
         response = if (outcome != null) {

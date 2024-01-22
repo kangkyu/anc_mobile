@@ -27,7 +27,6 @@ import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
 import api.ChurchAPI
 import api.LoadingState
-import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImagePainter
 import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.SubcomposeAsyncImageContent
@@ -37,7 +36,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import model.ExternalURL
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun JuboView() {
     val externalLink = remember { mutableStateOf(ExternalURL("")) }
@@ -127,16 +125,16 @@ fun JuboImage(externalLink: MutableState<ExternalURL>) {
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize(),
-        alignment = Alignment.TopStart
+        alignment = Alignment.TopEnd
     ) {
         val state = painter.state
         when (state) {
             is AsyncImagePainter.State.Loading -> {
-                Text("loading")
+                Text("Image loading")
             }
 
             is AsyncImagePainter.State.Error -> {
-                Text("error")
+                Text("Image error")
             }
 
             else -> {
