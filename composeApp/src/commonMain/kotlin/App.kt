@@ -15,6 +15,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import coil3.ImageLoader
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.memory.MemoryCache
+import coil3.network.ktor.KtorNetworkFetcherFactory
+import coil3.request.crossfade
 import ui.ChurchInfoView
 import ui.JuboView
 import ui.SermonVideosView
@@ -23,6 +28,20 @@ import ui.SermonVideosView
 fun App() {
     MaterialTheme {
         MainTabView()
+    }
+
+    setSingletonImageLoaderFactory { context ->
+        ImageLoader.Builder(context)
+            .components {
+                add(KtorNetworkFetcherFactory())
+            }
+            .memoryCache {
+                MemoryCache.Builder()
+                    .maxSizePercent(context, percent = 0.25)
+                    .build()
+            }
+            .crossfade(true)
+            .build()
     }
 }
 
