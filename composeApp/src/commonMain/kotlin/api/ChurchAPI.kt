@@ -23,8 +23,20 @@ class ChurchAPI {
             response.body()
         }
     }
+
+    suspend fun getVideos(): Result<String> {
+        return runCatching {
+            val response: HttpResponse = client.get("${baseUrl}/videos")
+            // client.close()
+            // commented out to avoid JobCancellationException
+            response.body()
+        }
+    }
 }
 
 enum class LoadingState {
-    Loading, Success, Failure, Error
+    Loading,
+    Success,
+    Failure,
+    Error
 }

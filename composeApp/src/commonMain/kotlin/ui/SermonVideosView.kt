@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,52 +28,66 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import androidx.compose.foundation.lazy.items
+import api.ChurchAPI
+import api.LoadingState
 import coil3.compose.AsyncImage
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
 import kotlinx.coroutines.IO
-import model.SearchListResponse
-import model.SearchResult
+import model.Video
 import org.example.project.openUrlInExternalBrowser
+import kotlin.reflect.KProperty
 
 @Composable
 fun SermonVideosView() {
-    var outcome: String? by remember { mutableStateOf(null) }
-    var response: SearchListResponse? by remember { mutableStateOf(null) }
-    val myApiKey = "YOUR_YOUTUBE_API_KEY" // TODO: use config variable
-    val channelId = "UCIsWNZwrpO_CnlaXO5Oc6bQ"
-    // val anconnuri = "https://www.youtube.com/channel/UCIsWNZwrpO_CnlaXO5Oc6bQ"
-    // val passionworship = "https://www.youtube.com/channel/UCBTZoebaG4rvChzKQ2D80-w"
+    val videos = remember { mutableStateOf<List<YouTubeVideo>>(listOf()) }
+    var loadingState: LoadingState by remember { mutableStateOf(LoadingState.Loading) }
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            val client = HttpClient()
-
-            val res = client.get("https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=$channelId&maxResults=7&order=date&type=video&key=$myApiKey")
-            client.close()
-            outcome = res.body()
-        }
-
-        response = if (outcome != null) {
-            val jsonString = outcome.toString()
-            val parsedResponse = withContext(Dispatchers.Default) {
-                Json.decodeFromString<SearchListResponse>(jsonString)
+            try {
+                ChurchAPI.shared.getVideos().onSuccess {
+                    videos.value = Json.decodeFromString<List<Video>>(it).toYouTubeVideos()
+                    loadingState = LoadingState.Success
+                }.onFailure {
+                    loadingState = LoadingState.Failure
+                }
+            } catch (e: Exception) {
+                println(e)
+                loadingState = LoadingState.Error
             }
-            parsedResponse
-        } else {
-            // TODO: Handle the case when json response is empty
-            null
         }
     }
 
-    val videos = response?.items?.toVideos() ?: emptyList()
-    VideosGrid(videos = videos, clickFunc = { openUrlInExternalBrowser("https://youtu.be/${it.videoId}") })
+    when (loadingState) {
+        LoadingState.Loading -> {
+            Text("Loading")
+        }
+
+        LoadingState.Success -> {
+            VideosGrid(videos = videos.value, clickFunc = { openUrlInExternalBrowser("https://youtu.be/${it.videoId}") })
+        }
+
+        LoadingState.Failure -> {
+            Text("Failure")
+        }
+
+        LoadingState.Error -> {
+            Text("Error")
+        }
+    }
 }
 
-fun List<SearchResult>.toVideos(): List<YouTubeVideo> {
+private operator fun Any.setValue(nothing: Nothing?, property: KProperty<*>, any: Any) {
+    TODO("Not yet implemented")
+}
+
+private operator fun Any.getValue(nothing: Nothing?, property: KProperty<*>): Any {
+    TODO("Not yet implemented")
+}
+
+
+fun List<Video>.toYouTubeVideos(): List<YouTubeVideo> {
     return this.map {
-        YouTubeVideo(it.id.videoId, it.snippet.title, it.snippet.thumbnails.high.url)
+        YouTubeVideo(it.id, it.title, it.thumbnailUrl)
     }
 }
 
@@ -125,5 +138,5 @@ fun VideosGrid(videos: List<YouTubeVideo>, clickFunc: (YouTubeVideo) -> Unit) {
 data class YouTubeVideo(
     val videoId: String,
     val title: String,
-    val thumbnailUrl: String,
+    val thumbnailUrl: String
 )
