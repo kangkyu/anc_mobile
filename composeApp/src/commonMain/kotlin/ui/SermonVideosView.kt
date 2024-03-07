@@ -1,14 +1,7 @@
 package ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -34,7 +27,6 @@ import coil3.compose.AsyncImage
 import kotlinx.coroutines.IO
 import model.Video
 import org.example.project.openUrlInExternalBrowser
-import kotlin.reflect.KProperty
 
 @Composable
 fun SermonVideosView() {
@@ -59,7 +51,8 @@ fun SermonVideosView() {
 
     when (loadingState) {
         LoadingState.Loading -> {
-            Text("Loading")
+//            Text("Loading")
+            VideosLoadingView()
         }
 
         LoadingState.Success -> {
@@ -75,15 +68,6 @@ fun SermonVideosView() {
         }
     }
 }
-
-private operator fun Any.setValue(nothing: Nothing?, property: KProperty<*>, any: Any) {
-    TODO("Not yet implemented")
-}
-
-private operator fun Any.getValue(nothing: Nothing?, property: KProperty<*>): Any {
-    TODO("Not yet implemented")
-}
-
 
 fun List<Video>.toYouTubeVideos(): List<YouTubeVideo> {
     return this.map {
@@ -140,3 +124,14 @@ data class YouTubeVideo(
     val title: String,
     val thumbnailUrl: String
 )
+
+@Composable
+fun VideosLoadingView() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("Loading...")
+    //        CircularProgressIndicator()
+    }
+}

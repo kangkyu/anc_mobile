@@ -25,6 +25,7 @@ import ui.JuboView
 import ui.SermonVideosView
 
 @Composable
+@coil3.annotation.ExperimentalCoilApi
 fun App() {
     MaterialTheme {
         MainTabView()
