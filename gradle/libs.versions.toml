@@ -13,13 +13,16 @@ androidx-test-junit = "1.1.5"
 compose = "1.6.2"
 compose-plugin = "1.6.0"
 junit = "4.13.2"
+kmpnotifierVersion = "0.6.0"
 kotlin = "1.9.22"
 ktor = "2.3.7"
 serialization = "1.6.2"
 coroutines = "1.7.3"
 coil = "3.0.0-alpha03"
+google-services = "4.4.1"
 
 [libraries]
+google-services = { module = "com.google.gms:google-services", version.ref = "google-services" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -44,9 +47,11 @@ ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "kto
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+mirzemehdi-kmpnotifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "kmpnotifierVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "google-services" }

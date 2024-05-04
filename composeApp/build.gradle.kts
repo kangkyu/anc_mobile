@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
 
     kotlin("plugin.serialization") version "1.9.22"
+
+    alias(libs.plugins.googleServices) apply false
 }
 
 kotlin {
@@ -37,8 +39,10 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            api(libs.mirzemehdi.kmpnotifier)
         }
         commonMain.dependencies {
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
@@ -62,12 +66,13 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            api(libs.mirzemehdi.kmpnotifier)
         }
     }
 }
 
 android {
-    namespace = "org.example.project"
+    namespace = "org.example.ancmobile"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -75,7 +80,7 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "org.example.project"
+        applicationId = "org.example.ancmobile"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 2
@@ -106,7 +111,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.example.project"
+            packageName = "org.example.ancmobile"
             packageVersion = "1.0.0"
         }
     }

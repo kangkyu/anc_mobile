@@ -5,4 +5,17 @@ plugins {
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
+
+    alias(libs.plugins.googleServices) apply false
 }
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath(libs.google.services)
+    }
+}
+
