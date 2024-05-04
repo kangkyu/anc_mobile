@@ -10,9 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
 import com.mmk.kmpnotifier.notification.NotifierManager
+import com.mmk.kmpnotifier.permission.permissionUtil
 import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 
 class MainActivity : ComponentActivity() {
+
+    private val permissionUtil by permissionUtil()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         instance = this
@@ -26,6 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             LaunchedEffect(Unit) {
                 println("**** LaunchedEffectApp is called")
+
                 NotifierManager.addListener(object : NotifierManager.Listener {
                     override fun onPushNotification(title: String?, body: String?) {
                         println("**** $title $body")
@@ -36,6 +41,9 @@ class MainActivity : ComponentActivity() {
                 })
             }
             App()
+        }
+        permissionUtil.askNotificationPermission {
+            println("HasNotification Permission: $it")
         }
     }
 
