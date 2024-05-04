@@ -9,7 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
+import com.mmk.kmpnotifier.extensions.onCreateOrOnNewIntent
 import com.mmk.kmpnotifier.notification.NotifierManager
+import com.mmk.kmpnotifier.notification.PayloadData
 import com.mmk.kmpnotifier.permission.permissionUtil
 import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 
@@ -26,6 +28,7 @@ class MainActivity : ComponentActivity() {
                 notificationIconResId = R.drawable.ic_launcher_foreground,
             )
         )
+        NotifierManager.onCreateOrOnNewIntent(intent)
 
         setContent {
             LaunchedEffect(Unit) {
@@ -38,6 +41,9 @@ class MainActivity : ComponentActivity() {
                     override fun onNewToken(token: String) {
                         println("**** onNewToken: $token")
                     }
+                    override fun onNotificationClicked(data: PayloadData) {
+                        println("Notification clicked, Notification payloadData: $data")
+                    }
                 })
             }
             App()
@@ -45,6 +51,11 @@ class MainActivity : ComponentActivity() {
         permissionUtil.askNotificationPermission {
             println("HasNotification Permission: $it")
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        NotifierManager.onCreateOrOnNewIntent(intent)
     }
 
     fun openBrowser(url: String) {

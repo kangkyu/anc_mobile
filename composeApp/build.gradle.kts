@@ -7,7 +7,7 @@ plugins {
 
     kotlin("plugin.serialization") version "1.9.22"
 
-    alias(libs.plugins.googleServices) apply false
+    id("com.google.gms.google-services")
 }
 
 kotlin {
@@ -40,9 +40,11 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             api(libs.mirzemehdi.kmpnotifier)
+
         }
         commonMain.dependencies {
 
+            implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
