@@ -1,3 +1,6 @@
+composeApp/release/
+iosApp/iosApp.xcodeproj/
+
 *.iml
 .gradle
 **/build/
