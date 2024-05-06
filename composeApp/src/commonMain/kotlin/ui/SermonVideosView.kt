@@ -26,7 +26,7 @@ import api.LoadingState
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.IO
 import model.Video
-import org.example.project.openUrlInExternalBrowser
+import org.example.ancmobile.openUrlInExternalBrowser
 
 @Composable
 fun SermonVideosView() {

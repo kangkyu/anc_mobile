@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.example.project.openUrlInExternalBrowser
+import org.example.ancmobile.openUrlInExternalBrowser
 
 @Composable
 fun ChurchInfoView() {

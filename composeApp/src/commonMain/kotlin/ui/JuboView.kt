@@ -50,8 +50,6 @@ fun JuboView() {
                 externalLink.value = Json.decodeFromString<ExternalURL>(it)
                 loadState = LoadingState.Success
             }.onFailure {
-                println("******")
-                println(it)
                 loadState = LoadingState.Failure
             }
         } catch (e: Exception) {

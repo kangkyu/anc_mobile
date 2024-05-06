@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "684076341065",
+    "project_id": "anc-mobile",
+    "storage_bucket": "anc-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684076341065:android:7a060a83a838062affec98",
+        "android_client_info": {
+          "package_name": "org.example.ancmobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfMDNuysvArCpdJ8Grr4Jo5XhyonopFN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
