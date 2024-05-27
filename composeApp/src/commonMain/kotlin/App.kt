@@ -23,11 +23,18 @@ import coil3.request.crossfade
 import ui.ChurchInfoView
 import ui.JuboView
 import ui.SermonVideosView
+import ui.theme.customColors
+import ui.theme.customTypography
+
 
 @Composable
 @coil3.annotation.ExperimentalCoilApi
 fun App() {
-    MaterialTheme {
+
+    MaterialTheme(
+        colors = customColors,
+        typography = customTypography
+    ) {
         MainTabView()
     }
 
