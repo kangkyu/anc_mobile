@@ -2,6 +2,7 @@ composeApp/release/
 iosApp/iosApp.xcodeproj/
 
 *.iml
+.kotlin
 .gradle
 **/build/
 xcuserdata
